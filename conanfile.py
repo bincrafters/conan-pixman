@@ -12,8 +12,8 @@ class PixmanConan(ConanFile):
     description = "Pixman is a low-level software library for pixel manipulation, providing features such as image compositing and trapezoid rasterization."
     license = "GNU Lesser General Public License (LGPL) version 2.1 or the Mozilla Public License (MPL) version 1.1"
     settings = "os", "arch", "compiler", "build_type"
-    options = {"shared": [True, False]}
-    default_options = "shared=False"
+    options = {"shared": [True, False], "fPIC": [True, False]}
+    default_options = "shared=False", "fPIC=True"
     exports_sources = ["*.patch"]
 
     folder = "{}-{}".format(name, version)
@@ -23,6 +23,8 @@ class PixmanConan(ConanFile):
         del self.settings.compiler.libcxx
         if self.settings.compiler == "Visual Studio":
             del self.options.shared
+        if self.settings.os == 'Windows':
+            del self.options.fPIC
 
     def build_requirements(self):
         if tools.os_info.is_windows:
@@ -61,6 +63,8 @@ class PixmanConan(ConanFile):
             else:
                 args.extend(["--enable-static", "--disable-shared"])
             autotools = AutoToolsBuildEnvironment(self, win_bash=win_bash)
+            if self.settings.os != 'Windows':
+                autotools.pic = self.options.fPIC
             autotools.configure(configure_dir=self.folder, args=args)
             autotools.make(target="pixman")
             autotools.install()
