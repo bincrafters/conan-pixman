@@ -45,13 +45,13 @@ class PixmanConan(ConanFile):
     def build_configure(self):
         win_bash = tools.os_info.is_windows
         if self.settings.compiler == "Visual Studio":
-            vars = {
+            make_vars = {
                 "MMX": "on" if self.settings.arch == "x86" else "off",
                 "SSE2": "on",
                 "SSSE3": "on",
                 "CFG": str(self.settings.build_type).lower(),
             }
-            var_args = " ".join("{}={}".format(k, v) for k, v in vars.items())
+            var_args = " ".join("{}={}".format(k, v) for k, v in make_vars.items())
             self.run("make -C {}/pixman -f Makefile.win32 {}".format(self.folder, var_args),
                      win_bash=win_bash)
         else:
