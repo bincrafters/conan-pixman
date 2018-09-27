@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdlib>
 
 #include <pixman.h>
 #include <pixman-version.h>
