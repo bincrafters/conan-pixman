@@ -32,6 +32,16 @@ class PixmanConan(ConanFile):
         tools.get("https://www.cairographics.org/releases/{}.tar.gz".format(self.folder))
         tools.patch(patch_file='clang_builtin.patch', base_path=self.folder)
 
+        if self.settings.os == 'Macos':
+            # https://lists.freedesktop.org/archives/pixman/2014-November/003461.html
+            test_makefile = os.path.join(self.folder, 'test', 'Makefile')
+            tools.replace_in_file(test_makefile,
+                                  'region_test_OBJECTS = region-test.$(OBJEXT)',
+                                  'region_test_OBJECTS = region-test.$(OBJEXT) utils.$(OBJEXT)')
+            tools.replace_in_file(test_makefile,
+                                  'scaling_helpers_test_OBJECTS = scaling-helpers-test.$(OBJEXT)',
+                                  'scaling_helpers_test_OBJECTS = scaling-helpers-test.$(OBJEXT) utils.$(OBJEXT)')
+
     def build_configure(self):
         win_bash = tools.os_info.is_windows
         if self.settings.compiler == "Visual Studio":
