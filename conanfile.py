@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from conans import ConanFile, CMake, tools
+from conans import ConanFile, AutoToolsBuildEnvironment, tools
 import os
 
 
@@ -11,38 +11,62 @@ class PixmanConan(ConanFile):
     url = "https://github.com/bincrafters/conan-pixman"
     description = "Pixman is a low-level software library for pixel manipulation, providing features such as image compositing and trapezoid rasterization."
     license = "GNU Lesser General Public License (LGPL) version 2.1 or the Mozilla Public License (MPL) version 1.1"
-    exports_sources = ["CMakeLists.txt", "LICENSE"]
     settings = "os", "arch", "compiler", "build_type"
     options = {"shared": [True, False]}
     default_options = "shared=False"
-    #use static org/channel for libs in conan-center
-    #use dynamic org/channel for libs in bincrafters
-    #requires = "OpenSSL/1.0.2l@conan/stable", \
-    #    "zlib/1.2.11@conan/stable", \
-    #    "websocketpp/0.7.0@%s/%s" % (self.user, self.channel)
+
+    folder = "{}-{}".format(name, version)
+    includedir = os.path.join("include", "pixman-1")
+
+    def config_options(self):
+        del self.settings.compiler.libcxx
+        if self.settings.compiler == "Visual Studio":
+            del self.options.shared
+
+    def build_requirements(self):
+        if tools.os_info.is_windows:
+            self.build_requires("msys2_installer/20161025@bincrafters/stable")
 
     def source(self):
-        source_url = "https://www.cairographics.org/releases/"
-        tools.get("{0}-{1}.tar.gz".format(source_url, self.version))
-        extracted_dir = self.name + "-" + self.version
-        os.rename(extracted_dir, "sources")
-        #Rename to "sources" is a convention to simplify later steps
+        tools.get("https://www.cairographics.org/releases/{}.tar.gz".format(self.folder))
+
+    def build_configure(self):
+        win_bash = tools.os_info.is_windows
+        if self.settings.compiler == "Visual Studio":
+            vars = {
+                "MMX": "on" if self.settings.arch == "x86" else "off",
+                "SSE2": "on",
+                "SSSE3": "on",
+                "CFG": str(self.settings.build_type).lower(),
+            }
+            var_args = " ".join("{}={}".format(k, v) for k, v in vars.items())
+            self.run("make -C {}/pixman -f Makefile.win32 {}".format(self.folder, var_args),
+                     win_bash=win_bash)
+        else:
+            args = ["--disable-libpng", "--disable-gtk"]
+            if self.options.shared:
+                args.extend(["--enable-shared", "--disable-static"])
+            else:
+                args.extend(["--enable-static", "--disable-shared"])
+            autotools = AutoToolsBuildEnvironment(self, win_bash=win_bash)
+            autotools.configure(configure_dir=self.folder, args=args)
+            autotools.make(target="pixman")
+            autotools.install()
 
     def build(self):
-        cmake = CMake(self)
-        cmake.definitions["BUILD_TESTS"] = False # example
-        cmake.configure(source_dir="sources")
-        cmake.build()
+        if self.settings.compiler == "Visual Studio":
+            with tools.vcvars(self.settings):
+                self.build_configure()
+        else:
+            self.build_configure()
 
     def package(self):
-        with tools.chdir("sources"):
-            self.copy(pattern="LICENSE")
-            self.copy(pattern="*", dst="include", src="include")
-            self.copy(pattern="*.dll", dst="bin", src="bin", keep_path=False)
-            self.copy(pattern="*.lib", dst="lib", src="lib", keep_path=False)
-            self.copy(pattern="*.a", dst="lib", src="lib", keep_path=False)
-            self.copy(pattern="*.so*", dst="lib", src="lib", keep_path=False)
-            self.copy(pattern="*.dylib", dst="lib", src="lib", keep_path=False)
+        if self.settings.compiler == "Visual Studio":
+            self.copy(pattern="*.lib", dst="lib", keep_path=False)
+            self.copy(pattern="*.pdb", dst="lib", keep_path=False)
+            self.copy(pattern="*{}pixman.h".format(os.sep), dst=self.includedir, keep_path=False)
+            self.copy(pattern="*{}pixman-version.h".format(os.sep), dst=self.includedir, keep_path=False)
 
     def package_info(self):
         self.cpp_info.libs = tools.collect_libs(self)
+        self.cpp_info.includedirs = [self.includedir]
