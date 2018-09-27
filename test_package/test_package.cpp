@@ -1,10 +1,10 @@
-#include <cstdlib>
 #include <iostream>
 
-#include <pixman/pixman.h>
+#include <pixman.h>
+#include <pixman-version.h>
 
 int main()
 {
-    std::cout << "Bincrafters\n";
+    std::cout << "pixman version: " << PIXMAN_VERSION_STRING << std::endl;
     return EXIT_SUCCESS;
 }
