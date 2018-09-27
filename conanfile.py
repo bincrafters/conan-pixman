@@ -34,7 +34,7 @@ class PixmanConan(ConanFile):
 
         if self.settings.os == 'Macos':
             # https://lists.freedesktop.org/archives/pixman/2014-November/003461.html
-            test_makefile = os.path.join(self.folder, 'test', 'Makefile')
+            test_makefile = os.path.join(self.folder, 'test', 'Makefile.in')
             tools.replace_in_file(test_makefile,
                                   'region_test_OBJECTS = region-test.$(OBJEXT)',
                                   'region_test_OBJECTS = region-test.$(OBJEXT) utils.$(OBJEXT)')
