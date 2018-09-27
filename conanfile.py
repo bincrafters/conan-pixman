@@ -54,15 +54,9 @@ class PixmanConan(ConanFile):
             autotools.install()
 
     def build(self):
-        if tools.os_info.is_windows:
-            msys_bin = self.deps_env_info["msys2_installer"].MSYS_BIN
-            with tools.environment_append({"PATH": [msys_bin],
-                                           "CONAN_BASH_PATH": os.path.join(msys_bin, "bash.exe")}):
-                if self.settings.compiler == "Visual Studio":
-                    with tools.vcvars(self.settings):
-                        self.build_configure()
-                else:
-                    self.build_configure()
+        if self.settings.compiler == "Visual Studio":
+            with tools.vcvars(self.settings):
+                self.build_configure()
         else:
             self.build_configure()
 
