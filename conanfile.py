@@ -14,6 +14,7 @@ class PixmanConan(ConanFile):
     settings = "os", "arch", "compiler", "build_type"
     options = {"shared": [True, False]}
     default_options = "shared=False"
+    exports_sources = ["*.patch"]
 
     folder = "{}-{}".format(name, version)
     includedir = os.path.join("include", "pixman-1")
@@ -29,6 +30,7 @@ class PixmanConan(ConanFile):
 
     def source(self):
         tools.get("https://www.cairographics.org/releases/{}.tar.gz".format(self.folder))
+        tools.patch(patch_file='clang_builtin.patch', base_path=self.folder)
 
     def build_configure(self):
         win_bash = tools.os_info.is_windows
