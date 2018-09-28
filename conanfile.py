@@ -53,6 +53,10 @@ class PixmanConan(ConanFile):
                 "SSSE3": "on",
                 "CFG": str(self.settings.build_type).lower(),
             }
+            tools.replace_in_file(os.path.join(self.folder, 'Makefile.win32.common'),
+                                  '-MDd ', '-%s ' % str(self.settings.compiler.runtime))
+            tools.replace_in_file(os.path.join(self.folder, 'Makefile.win32.common'),
+                                  '-MD ', '-%s ' % str(self.settings.compiler.runtime))
             var_args = " ".join("{}={}".format(k, v) for k, v in make_vars.items())
             self.run("make -C {}/pixman -f Makefile.win32 {}".format(self.folder, var_args),
                      win_bash=win_bash)
