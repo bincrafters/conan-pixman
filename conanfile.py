@@ -7,14 +7,18 @@ import os
 
 class PixmanConan(ConanFile):
     name = "pixman"
-    version = "0.34.0"
+    version = "0.38.0"
+    description = "Pixman is a low-level software library for pixel manipulation"
+    topics = ("conan", "pixman", "graphics", "compositing", "rasterization")
     url = "https://github.com/bincrafters/conan-pixman"
-    description = "Pixman is a low-level software library for pixel manipulation, providing features such as image compositing and trapezoid rasterization."
-    license = "GNU Lesser General Public License (LGPL) version 2.1 or the Mozilla Public License (MPL) version 1.1"
+    homepage = "https://cairographics.org/"
+    author = "Bincrafters <bincrafters@gmail.com>"
+    license = ("LGPL-2.1-only", "MPL-1.1")
+    exports_sources = ["*.patch"]
+
     settings = "os", "arch", "compiler", "build_type"
     options = {"shared": [True, False], "fPIC": [True, False]}
-    default_options = "shared=False", "fPIC=True"
-    exports_sources = ["*.patch"]
+    default_options = {'shared': False, 'fPIC': True}
 
     folder = "{}-{}".format(name, version)
     includedir = os.path.join("include", "pixman-1")

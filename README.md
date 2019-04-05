@@ -2,9 +2,9 @@
 
 | Bintray | Windows | Linux & macOS |
 |:--------:|:---------:|:-----------------:|
-|[![Download](https://api.bintray.com/packages/bincrafters/public-conan/pixman%3Abincrafters/images/download.svg) ](https://bintray.com/bincrafters/public-conan/pixman%3Abincrafters/_latestVersion)|[![Build status](https://ci.appveyor.com/api/projects/status/github/bincrafters/conan-pixman?svg=true)](https://ci.appveyor.com/project/bincrafters/conan-pixman)|[![Build Status](https://travis-ci.org/bincrafters/conan-pixman.svg)](https://travis-ci.org/bincrafters/conan-pixman)|
+|[![Download](https://api.bintray.com/packages/bincrafters/public-conan/pixman%3Abincrafters/images/download.svg) ](https://bintray.com/bincrafters/public-conan/pixman%3Abincrafters/_latestVersion)|[![Build status](https://ci.appveyor.com/api/projects/status/github/bincrafters/conan-pixman?svg=true)](https://ci.appveyor.com/project/bincrafters/conan-pixman)|[![Build Status](https://travis-ci.com/bincrafters/conan-pixman.svg)](https://travis-ci.com/bincrafters/conan-pixman)|
 
-## Conan.io Information
+## Conan Information
 
 Bincrafters packages can be found in the following public Conan repository:
 
