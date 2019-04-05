@@ -36,7 +36,6 @@ class PixmanConan(ConanFile):
 
     def source(self):
         tools.get("https://www.cairographics.org/releases/{}.tar.gz".format(self.folder))
-        tools.patch(patch_file='clang_builtin.patch', base_path=self.folder)
 
         if self.settings.os == 'Macos':
             # https://lists.freedesktop.org/archives/pixman/2014-November/003461.html
