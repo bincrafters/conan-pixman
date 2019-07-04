@@ -35,7 +35,8 @@ class PixmanConan(ConanFile):
             self.build_requires("msys2_installer/20161025@bincrafters/stable")
 
     def source(self):
-        tools.get("https://www.cairographics.org/releases/{}.tar.gz".format(self.folder))
+        tools.get("https://www.cairographics.org/releases/{}.tar.gz".format(self.folder),
+                  sha256="a7592bef0156d7c27545487a52245669b00cf7e70054505381cff2136d890ca8")
 
         if self.settings.os == 'Macos':
             # https://lists.freedesktop.org/archives/pixman/2014-November/003461.html
