@@ -85,6 +85,9 @@ class PixmanConan(ConanFile):
             self.build_configure()
 
     def package(self):
+        la = os.path.join(self.package_folder, "lib", "libpixman-1.la")
+        if os.path.isfile(la):
+            os.unlink(la)
         if self.settings.compiler == "Visual Studio":
             self.copy(pattern="*.lib", dst="lib", keep_path=False)
             self.copy(pattern="*.pdb", dst="lib", keep_path=False)
