@@ -35,7 +35,8 @@ class PixmanConan(ConanFile):
             self.build_requires("msys2_installer/20161025@bincrafters/stable")
 
     def source(self):
-        tools.get("https://www.cairographics.org/releases/{}.tar.gz".format(self.folder))
+        tools.get("https://www.cairographics.org/releases/{}.tar.gz".format(self.folder),
+                  sha256="a7592bef0156d7c27545487a52245669b00cf7e70054505381cff2136d890ca8")
 
         if self.settings.os == 'Macos':
             # https://lists.freedesktop.org/archives/pixman/2014-November/003461.html
@@ -84,6 +85,9 @@ class PixmanConan(ConanFile):
             self.build_configure()
 
     def package(self):
+        la = os.path.join(self.package_folder, "lib", "libpixman-1.la")
+        if os.path.isfile(la):
+            os.unlink(la)
         if self.settings.compiler == "Visual Studio":
             self.copy(pattern="*.lib", dst="lib", keep_path=False)
             self.copy(pattern="*.pdb", dst="lib", keep_path=False)
