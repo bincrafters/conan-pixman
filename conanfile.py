@@ -32,7 +32,7 @@ class PixmanConan(ConanFile):
 
     def build_requirements(self):
         if tools.os_info.is_windows:
-            self.build_requires("msys2_installer/20161025@bincrafters/stable")
+            self.build_requires("msys2/20161025")
 
     def source(self):
         tools.get("https://www.cairographics.org/releases/{}.tar.gz".format(self.folder),
