@@ -9,7 +9,6 @@ class PixmanConan(ConanFile):
     topics = ("conan", "pixman", "graphics", "compositing", "rasterization")
     url = "https://github.com/bincrafters/conan-pixman"
     homepage = "https://cairographics.org/"
-    author = "Bincrafters <bincrafters@gmail.com>"
     license = ("LGPL-2.1-only", "MPL-1.1")
     exports_sources = ["*.patch"]
 
