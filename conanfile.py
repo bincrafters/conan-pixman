@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from conans import ConanFile, AutoToolsBuildEnvironment, tools
 import os
 
@@ -12,7 +9,6 @@ class PixmanConan(ConanFile):
     topics = ("conan", "pixman", "graphics", "compositing", "rasterization")
     url = "https://github.com/bincrafters/conan-pixman"
     homepage = "https://cairographics.org/"
-    author = "Bincrafters <bincrafters@gmail.com>"
     license = ("LGPL-2.1-only", "MPL-1.1")
     exports_sources = ["*.patch"]
 
@@ -25,6 +21,7 @@ class PixmanConan(ConanFile):
 
     def config_options(self):
         del self.settings.compiler.libcxx
+        del self.settings.compiler.cppstd
         if self.settings.compiler == "Visual Studio":
             del self.options.shared
         if self.settings.os == 'Windows':
@@ -32,7 +29,7 @@ class PixmanConan(ConanFile):
 
     def build_requirements(self):
         if tools.os_info.is_windows:
-            self.build_requires("msys2_installer/20161025@bincrafters/stable")
+            self.build_requires("msys2/20190524")
 
     def source(self):
         tools.get("https://www.cairographics.org/releases/{}.tar.gz".format(self.folder),
